@@ -6,7 +6,7 @@ Status: Draft for review. Do not implement until approved.
 
 ## Goal
 
-Build a WebMCP-enabled web app for the OpenAI WebMCP Challenge that demonstrates a strong human-agent workflow: turning noisy public/community signals into sourced, reviewable intelligence briefs and approved actions.
+Build a WebMCP-enabled web app that demonstrates a strong human-agent workflow: turning noisy public/community signals into sourced, reviewable intelligence briefs and approved actions.
 
 The app should be judge-friendly, deterministic, deployable, and usable without private X, Slack, Teams, or email credentials.
 

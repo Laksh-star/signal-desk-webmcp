@@ -1,8 +1,14 @@
 # Signal Desk
 
-Signal Desk is a WebMCP-enabled intelligence review room for the OpenAI WebMCP Challenge.
+Signal Desk is a WebMCP-enabled intelligence review room for evidence-backed product, community, and market decisions.
 
 It demonstrates a provenance-first human-agent workflow: agents can search signals, cluster themes, draft evidence-linked briefs, explain evidence, and propose actions, while humans keep explicit review control over claims, themes, and actions.
+
+## Product Use Case
+
+Teams often collect important feedback across forums, support queues, calls, release comments, and competitor notes. The hard part is not summarizing the stream once. The hard part is preserving which evidence supports which claim, deciding what is ready to act on, and keeping a record of what changed.
+
+Signal Desk gives an agent structured tools for investigation and drafting while keeping the human operator in charge of review state.
 
 ## What Makes It Different
 
@@ -16,7 +22,7 @@ Signal Desk is not a generic analytics dashboard or chat wrapper. Its core contr
 
 ## Current Phase
 
-Phase 4 private deployment complete:
+Current status:
 
 - Static app shell.
 - Seeded product/community intelligence dataset.
@@ -24,9 +30,9 @@ Phase 4 private deployment complete:
 - Search, filter, signal detail, theme review, claim review, action review, and audit trail.
 - WebMCP tools registered through `document.modelContext.registerTool`.
 - Fallback status when WebMCP is unavailable.
-- Private production deployment on ChatGPT Sites.
+- Public production deployment on ChatGPT Sites.
 
-See `SUBMISSION.md` for the demo script and final Devpost checklist.
+See `SUBMISSION.md` for challenge-specific submission notes.
 
 ## Run Locally
 

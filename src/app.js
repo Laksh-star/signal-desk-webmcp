@@ -691,7 +691,7 @@ async function registerWebMcpTools() {
   };
 
   if (!modelContext?.registerTool) {
-    updateToolStatus("unavailable", "WebMCP unavailable");
+    updateToolStatus("unavailable", "Open in ChatGPT for WebMCP");
     return;
   }
 
@@ -803,7 +803,7 @@ async function registerWebMcpTools() {
     {
       name: "reset_demo",
       description:
-        "Reset Signal Desk to its seeded challenge demo scenario and record that the agent reset it.",
+        "Reset Signal Desk to its seeded demo scenario and record that the agent reset it.",
       inputSchema: {
         type: "object",
         properties: {},
