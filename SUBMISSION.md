@@ -8,7 +8,7 @@ https://signal-desk-webmcp.lakshyindy.chatgpt.site
 
 Current access:
 
-Owner-only private deployment. Make public before submitting to Devpost.
+Public deployment. An unauthenticated HTTP check returned `200` on 2026-08-26.
 
 ## One-Line Description
 
@@ -47,4 +47,4 @@ The demo uses synthetic public-safe data, so judges can run the workflow immedia
 - README includes run instructions and WebMCP tools.
 - License included.
 - Devpost form includes the challenge description and demo video.
-- Confirm the app is publicly accessible before submitting.
+- Confirm the public app URL still returns `200` before submitting.
