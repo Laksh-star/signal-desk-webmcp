@@ -181,6 +181,26 @@ h4 {
   margin: 0 auto 16px;
 }
 
+.demo-result {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: 1560px;
+  min-height: 42px;
+  margin: 0 auto 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  padding: 10px 14px;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.demo-result strong {
+  color: var(--green);
+  white-space: nowrap;
+}
+
 .metric {
   display: flex;
   align-items: center;
@@ -615,6 +635,11 @@ dd {
   .button,
   .tool-status {
     flex: 1;
+  }
+
+  .demo-result {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .workspace {

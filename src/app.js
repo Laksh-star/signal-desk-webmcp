@@ -20,8 +20,10 @@ const els = {
   auditList: document.querySelector("#audit-list"),
   resetDemo: document.querySelector("#reset-demo"),
   selectCritical: document.querySelector("#select-critical"),
+  runAgentDemo: document.querySelector("#run-agent-demo"),
   toolStatus: document.querySelector("#tool-status"),
   scoreboard: document.querySelector("#scoreboard"),
+  demoResult: document.querySelector("#demo-result"),
 };
 
 const reviewStates = ["proposed", "approved", "rejected", "needs_edit"];
@@ -215,6 +217,13 @@ function updateToolStatus(status, label) {
   els.toolStatus.innerHTML = `
     <span class="status-dot ${dotClass}" aria-hidden="true"></span>
     <span>${label}</span>
+  `;
+}
+
+function updateDemoResult(title, detail) {
+  els.demoResult.innerHTML = `
+    <strong>${title}</strong>
+    <span>${detail}</span>
   `;
 }
 
@@ -683,6 +692,24 @@ function getAuditTrailTool({ limit = 8 } = {}) {
   });
 }
 
+function runLocalAgentDemo() {
+  const search = searchSignalsTool({ query: "admin import", limit: 4 });
+  explainEvidenceTool({ targetType: "theme", targetId: "theme-onboarding" });
+  draftBriefTool({
+    themeIds: ["theme-onboarding", "theme-trust"],
+    title: "Admin Import Activation Brief",
+  });
+  proposeActionsTool({ themeIds: ["theme-onboarding"], owner: "Product" });
+  const audit = getAuditTrailTool({ limit: 4 });
+  const found = search.structuredContent.signals.length;
+  const latest = audit.structuredContent.auditTrail[0]?.action || "Updated audit trail";
+
+  updateDemoResult(
+    "Agent demo complete.",
+    `Found ${found} signals, drafted an evidence-linked brief, proposed a Product action, and logged "${latest}".`,
+  );
+}
+
 async function registerWebMcpTools() {
   const modelContext = getModelContext();
   window.SignalDeskWebMCP = {
@@ -892,7 +919,12 @@ els.signalSearch.addEventListener("input", (event) => {
   render();
 });
 
-els.resetDemo.addEventListener("click", resetDemo);
+els.resetDemo.addEventListener("click", () => {
+  resetDemo();
+  updateDemoResult("Ready.", "Demo state reset. Run the local demo or use WebMCP from a supported agent browser.");
+});
+
+els.runAgentDemo.addEventListener("click", runLocalAgentDemo);
 
 els.selectCritical.addEventListener("click", () => {
   activeFilter = "critical";

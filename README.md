@@ -10,6 +10,12 @@ Teams often collect important feedback across forums, support queues, calls, rel
 
 Signal Desk gives an agent structured tools for investigation and drafting while keeping the human operator in charge of review state.
 
+## Runtime Model
+
+Signal Desk does not require a local background service. The production app is a static HTTPS site with a small Worker wrapper for hosting.
+
+When WebMCP is available, the browser host provides `document.modelContext` and the page registers tools into that host. When WebMCP is not available, the human UI still works and the `Run Agent Demo` button exercises the same workflow locally in any browser.
+
 ## What Makes It Different
 
 Signal Desk is not a generic analytics dashboard or chat wrapper. Its core contract is:
@@ -28,6 +34,7 @@ Current status:
 - Seeded product/community intelligence dataset.
 - Responsive operator workspace UI.
 - Search, filter, signal detail, theme review, claim review, action review, and audit trail.
+- Normal-browser `Run Agent Demo` fallback.
 - WebMCP tools registered through `document.modelContext.registerTool`.
 - Fallback status when WebMCP is unavailable.
 - Public production deployment on ChatGPT Sites.
@@ -73,6 +80,8 @@ Site tools require a ChatGPT account, selected model, and browser environment th
 6. Ask for the audit trail.
 
 The app should visibly update as WebMCP tools are called.
+
+For a regular browser demo, click `Run Agent Demo`. It searches the seeded signals, drafts the brief, proposes an approval-gated action, and writes the audit trail without any external service.
 
 ## Development Checks
 
