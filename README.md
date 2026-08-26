@@ -61,6 +61,8 @@ Signal Desk exposes these tools when opened in a WebMCP-capable browser:
 - `get_audit_trail`
 - `reset_demo`
 
+Site tools require a ChatGPT account, selected model, and browser environment that support WebMCP. They are currently intended for the ChatGPT desktop app's built-in browser. Regular Chrome, Safari, Firefox, and ChatGPT Work cloud browser can open the app UI, but they may show the fallback message instead of exposing WebMCP tools.
+
 ## Demo Flow
 
 1. Ask the agent to find the strongest admin/import signals.

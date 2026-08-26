@@ -691,7 +691,7 @@ async function registerWebMcpTools() {
   };
 
   if (!modelContext?.registerTool) {
-    updateToolStatus("unavailable", "Open in ChatGPT for WebMCP");
+    updateToolStatus("unavailable", "Use ChatGPT desktop browser for WebMCP");
     return;
   }
 
