@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signal Desk</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">WebMCP Challenge Concept</p>
+          <h1>Signal Desk</h1>
+          <p class="subtitle">
+            A provenance-first intelligence workspace where agents can investigate, draft, and propose actions while humans keep review control.
+          </p>
+        </div>
+        <div class="topbar-actions" aria-label="Demo controls">
+          <div class="tool-status" id="tool-status" role="status">
+            <span class="status-dot pending" aria-hidden="true"></span>
+            <span>Checking WebMCP</span>
+          </div>
+          <button class="button secondary" id="select-critical" type="button">Focus Critical</button>
+          <button class="button" id="reset-demo" type="button">Reset Demo</button>
+        </div>
+      </header>
+
+      <section class="scoreboard" id="scoreboard" aria-label="Workspace summary"></section>
+
+      <main class="workspace">
+        <section class="panel inbox-panel" aria-labelledby="signals-heading">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Inbox</p>
+              <h2 id="signals-heading">Signals</h2>
+            </div>
+            <label class="search-box">
+              <span>Search</span>
+              <input id="signal-search" type="search" placeholder="docs, admin, receipt" />
+            </label>
+          </div>
+          <div class="filter-row" id="signal-filters" aria-label="Signal filters"></div>
+          <div class="signal-list" id="signal-list"></div>
+        </section>
+
+        <section class="panel theme-panel" aria-labelledby="themes-heading">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Patterns</p>
+              <h2 id="themes-heading">Themes</h2>
+            </div>
+            <span class="counter" id="theme-count"></span>
+          </div>
+          <div class="theme-list" id="theme-list"></div>
+        </section>
+
+        <section class="panel brief-panel" aria-labelledby="brief-heading">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Draft</p>
+              <h2 id="brief-heading">Brief</h2>
+            </div>
+            <span class="status-pill" id="brief-status"></span>
+          </div>
+          <div id="brief-content"></div>
+        </section>
+
+        <section class="panel actions-panel" aria-labelledby="actions-heading">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Review</p>
+              <h2 id="actions-heading">Actions</h2>
+            </div>
+            <span class="counter" id="action-count"></span>
+          </div>
+          <div id="action-list"></div>
+        </section>
+
+        <section class="panel detail-panel" aria-labelledby="detail-heading">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Evidence</p>
+              <h2 id="detail-heading">Selected Signal</h2>
+            </div>
+          </div>
+          <div id="signal-detail"></div>
+        </section>
+
+        <section class="panel audit-panel" aria-labelledby="audit-heading">
+          <div class="panel-header">
+            <div>
+              <p class="eyebrow">Provenance</p>
+              <h2 id="audit-heading">Audit Trail</h2>
+            </div>
+          </div>
+          <ol class="audit-list" id="audit-list"></ol>
+        </section>
+      </main>
+    </div>
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>

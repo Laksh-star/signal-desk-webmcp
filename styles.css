@@ -1,0 +1,646 @@
+:root {
+  color-scheme: light;
+  --bg: #f4f5f1;
+  --panel: #ffffff;
+  --panel-soft: #f9faf6;
+  --text: #17201b;
+  --muted: #66736b;
+  --line: #dfe4dc;
+  --strong-line: #bfc9bf;
+  --green: #2e7a54;
+  --green-soft: #e4f2e8;
+  --amber: #9a641d;
+  --amber-soft: #f8edda;
+  --red: #a9443f;
+  --red-soft: #f7e4e2;
+  --blue: #2d5d89;
+  --blue-soft: #e3edf5;
+  --ink: #101613;
+  --shadow: 0 18px 40px rgba(23, 32, 27, 0.08);
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app-shell {
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.topbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: 1560px;
+  margin: 0 auto 18px;
+  padding: 20px 0 10px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: var(--green);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2,
+h3,
+h4,
+p {
+  margin-top: 0;
+}
+
+h1 {
+  margin-bottom: 8px;
+  color: var(--ink);
+  font-size: clamp(2.1rem, 4vw, 4rem);
+  line-height: 0.98;
+  letter-spacing: 0;
+}
+
+h2 {
+  margin-bottom: 0;
+  font-size: 1.1rem;
+  line-height: 1.1;
+  letter-spacing: 0;
+}
+
+h3 {
+  margin-bottom: 8px;
+  font-size: 0.98rem;
+  line-height: 1.25;
+  letter-spacing: 0;
+}
+
+h4 {
+  margin-bottom: 8px;
+  font-size: 0.82rem;
+  letter-spacing: 0;
+}
+
+.subtitle {
+  max-width: 760px;
+  margin-bottom: 0;
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.tool-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 8px 10px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: var(--amber);
+}
+
+.status-dot.available {
+  background: var(--green);
+}
+
+.status-dot.unavailable {
+  background: var(--red);
+}
+
+.button,
+.review-controls button,
+.evidence-links button,
+.chip {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--text);
+  min-height: 38px;
+  padding: 9px 12px;
+  font-weight: 750;
+}
+
+.button {
+  border-color: var(--green);
+  background: var(--green);
+  color: #fff;
+}
+
+.button.secondary {
+  border-color: var(--strong-line);
+  background: var(--panel);
+  color: var(--text);
+}
+
+.scoreboard {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(120px, 1fr));
+  gap: 10px;
+  max-width: 1560px;
+  margin: 0 auto 16px;
+}
+
+.metric {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 58px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 12px 14px;
+  box-shadow: 0 10px 26px rgba(23, 32, 27, 0.05);
+}
+
+.metric span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.metric strong {
+  color: var(--ink);
+  font-size: 1.45rem;
+  line-height: 1;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(280px, 1.15fr) minmax(260px, 0.9fr) minmax(320px, 1.25fr);
+  grid-template-areas:
+    "inbox themes brief"
+    "inbox actions detail"
+    "audit audit detail";
+  gap: 16px;
+  max-width: 1560px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+.panel {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--shadow);
+}
+
+.inbox-panel {
+  grid-area: inbox;
+}
+
+.theme-panel {
+  grid-area: themes;
+}
+
+.brief-panel {
+  grid-area: brief;
+}
+
+.actions-panel {
+  grid-area: actions;
+}
+
+.detail-panel {
+  grid-area: detail;
+}
+
+.audit-panel {
+  grid-area: audit;
+}
+
+.panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  border-bottom: 1px solid var(--line);
+  padding: 16px;
+}
+
+.search-box {
+  display: grid;
+  gap: 5px;
+  min-width: 170px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.search-box input {
+  width: 100%;
+  min-height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: var(--text);
+  text-transform: none;
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-bottom: 1px solid var(--line);
+  padding: 12px 16px;
+}
+
+.chip {
+  min-height: 32px;
+  padding: 6px 10px;
+  color: var(--muted);
+  text-transform: capitalize;
+}
+
+.chip.active {
+  border-color: var(--green);
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.signal-list,
+.theme-list,
+#brief-content,
+#action-list,
+#signal-detail,
+.audit-list {
+  padding: 14px;
+}
+
+.signal-list,
+.theme-list,
+.claim-list,
+#action-list,
+.audit-list {
+  display: grid;
+  gap: 10px;
+}
+
+.signal-card,
+.theme-card,
+.claim-card,
+.action-card,
+.detail-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-soft);
+  padding: 13px;
+}
+
+.signal-card,
+.theme-card {
+  transition:
+    border-color 140ms ease,
+    background 140ms ease,
+    transform 140ms ease;
+}
+
+.signal-card:hover,
+.theme-card:hover {
+  border-color: var(--strong-line);
+  transform: translateY(-1px);
+}
+
+.signal-card.active,
+.theme-card.active {
+  border-color: var(--green);
+  background: #fbfefb;
+}
+
+.signal-card p,
+.theme-card p,
+.claim-card p,
+.action-card p,
+.detail-card p,
+.audit-list p,
+.brief-title p {
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.card-row,
+.meta-row,
+.audit-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.card-row {
+  margin-bottom: 9px;
+}
+
+.meta-row {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.source,
+.owner,
+.claim-label,
+.confidence,
+.counter {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.counter {
+  white-space: nowrap;
+}
+
+.priority,
+.state,
+.status-pill {
+  border-radius: 999px;
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  font-weight: 850;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.priority.critical,
+.state.rejected {
+  background: var(--red-soft);
+  color: var(--red);
+}
+
+.priority.high,
+.state.needs_edit {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+.priority.medium,
+.state.proposed,
+.status-pill.draft {
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+
+.state.approved {
+  background: var(--green-soft);
+  color: var(--green);
+}
+
+.tag-row,
+.evidence-links,
+.linked-themes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 10px;
+}
+
+.tag-row span,
+.linked-themes span {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #fff;
+  padding: 4px 8px;
+  color: var(--muted);
+  font-size: 0.74rem;
+}
+
+.support-line {
+  color: var(--green);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.brief-title {
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+}
+
+.evidence-links button {
+  min-height: 30px;
+  padding: 6px 9px;
+  background: #fff;
+  color: var(--blue);
+  font-size: 0.75rem;
+  text-align: left;
+}
+
+.review-controls {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.review-controls button {
+  min-height: 34px;
+  padding: 7px 8px;
+  font-size: 0.75rem;
+}
+
+.review-controls.compact {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 10px;
+}
+
+.review-controls.compact button {
+  min-height: 30px;
+  padding: 6px;
+  font-size: 0.68rem;
+}
+
+dl {
+  display: grid;
+  gap: 8px;
+  margin: 14px 0;
+}
+
+dl div {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: 10px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 8px;
+}
+
+dt {
+  color: var(--muted);
+  font-size: 0.74rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+dd {
+  margin: 0;
+  color: var(--text);
+  font-size: 0.86rem;
+}
+
+.evidence-url {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  border: 1px solid var(--green);
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: var(--green);
+  font-size: 0.84rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.linked-themes {
+  display: block;
+  margin-top: 16px;
+}
+
+.linked-themes span {
+  display: inline-flex;
+  margin: 0 6px 6px 0;
+}
+
+.audit-list {
+  list-style: none;
+  margin: 0;
+}
+
+.audit-list li {
+  border-left: 3px solid var(--green);
+  background: var(--panel-soft);
+  padding: 10px 12px;
+}
+
+.audit-head {
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 0.73rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.audit-list strong {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+.audit-list p {
+  margin-bottom: 0;
+}
+
+.empty-state {
+  border: 1px dashed var(--strong-line);
+  border-radius: 8px;
+  padding: 18px;
+  color: var(--muted);
+}
+
+@media (max-width: 1180px) {
+  .workspace {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "inbox brief"
+      "themes actions"
+      "detail detail"
+      "audit audit";
+  }
+
+  .scoreboard {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .app-shell {
+    padding: 14px;
+  }
+
+  .topbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .topbar-actions {
+    justify-content: stretch;
+  }
+
+  .button,
+  .tool-status {
+    flex: 1;
+  }
+
+  .workspace {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "inbox"
+      "themes"
+      "brief"
+      "actions"
+      "detail"
+      "audit";
+  }
+
+  .panel-header {
+    flex-direction: column;
+  }
+
+  .search-box {
+    width: 100%;
+  }
+
+  .review-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .scoreboard {
+    grid-template-columns: 1fr;
+  }
+}
