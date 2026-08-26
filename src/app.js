@@ -112,6 +112,31 @@ function labelFor(value) {
   return value.replace("_", " ");
 }
 
+function tokenizeSearch(value) {
+  return String(value)
+    .trim()
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+function signalHaystack(signal) {
+  return [
+    signal.title,
+    signal.excerpt,
+    signal.source,
+    signal.author,
+    signal.channel,
+    ...signal.evidenceTags,
+  ]
+    .join(" ")
+    .toLowerCase();
+}
+
+function matchesSearchTokens(haystack, tokens) {
+  return !tokens.length || tokens.every((token) => haystack.includes(token));
+}
+
 function asToolResult(text, structuredContent = {}) {
   return {
     content: [{ type: "text", text }],
@@ -216,23 +241,14 @@ function renderScoreboard() {
 }
 
 function filteredSignals() {
+  const searchTokens = tokenizeSearch(searchTerm);
   return state.signals.filter((signal) => {
     const matchesFilter =
       activeFilter === "all" ||
       signal.priority === activeFilter ||
       signal.confidence === activeFilter ||
       signal.status === activeFilter;
-    const haystack = [
-      signal.title,
-      signal.excerpt,
-      signal.source,
-      signal.author,
-      signal.channel,
-      ...signal.evidenceTags,
-    ]
-      .join(" ")
-      .toLowerCase();
-    const matchesSearch = !searchTerm || haystack.includes(searchTerm);
+    const matchesSearch = matchesSearchTokens(signalHaystack(signal), searchTokens);
 
     return matchesFilter && matchesSearch;
   });
@@ -488,21 +504,11 @@ function getModelContext() {
 }
 
 function searchSignalsTool({ query = "", priority = "all", confidence = "all", limit = 6 } = {}) {
-  const normalizedQuery = String(query).trim().toLowerCase();
+  const searchTokens = tokenizeSearch(query);
   const safeLimit = Math.max(1, Math.min(Number(limit) || 6, 20));
   const matches = state.signals
     .filter((signal) => {
-      const haystack = [
-        signal.title,
-        signal.excerpt,
-        signal.source,
-        signal.author,
-        signal.channel,
-        ...signal.evidenceTags,
-      ]
-        .join(" ")
-        .toLowerCase();
-      const matchesQuery = !normalizedQuery || haystack.includes(normalizedQuery);
+      const matchesQuery = matchesSearchTokens(signalHaystack(signal), searchTokens);
       const matchesPriority = priority === "all" || signal.priority === priority;
       const matchesConfidence = confidence === "all" || signal.confidence === confidence;
 
