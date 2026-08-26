@@ -16,7 +16,7 @@ Signal Desk is not a generic analytics dashboard or chat wrapper. Its core contr
 
 ## Current Phase
 
-Phase 3 complete:
+Phase 4 private deployment complete:
 
 - Static app shell.
 - Seeded product/community intelligence dataset.
@@ -24,6 +24,9 @@ Phase 3 complete:
 - Search, filter, signal detail, theme review, claim review, action review, and audit trail.
 - WebMCP tools registered through `document.modelContext.registerTool`.
 - Fallback status when WebMCP is unavailable.
+- Private production deployment on ChatGPT Sites.
+
+See `SUBMISSION.md` for the demo script and final Devpost checklist.
 
 ## Run Locally
 
