@@ -10,10 +10,10 @@
     <div class="app-shell">
       <header class="topbar">
         <div>
-          <p class="eyebrow">Agentic Intelligence Workspace</p>
+          <p class="eyebrow">Customer Request Triage</p>
           <h1>Signal Desk</h1>
           <p class="subtitle">
-            A provenance-first intelligence workspace where agents can investigate, draft, and propose actions while humans keep review control.
+            Make sense of messy customer requests after a launch, turn patterns into a customer-impact brief, and review product actions before anything moves forward.
           </p>
         </div>
         <div class="topbar-actions" aria-label="Demo controls">
@@ -22,14 +22,67 @@
             <span>Checking WebMCP</span>
           </div>
           <button class="button secondary" id="select-critical" type="button">Focus Critical</button>
-          <button class="button secondary" id="run-agent-demo" type="button">Run Agent Demo</button>
-          <button class="button" id="reset-demo" type="button">Reset Demo</button>
+          <button class="button secondary" id="behind-scenes" type="button">Behind the Scenes</button>
+          <button class="button secondary" id="reset-demo" type="button">Reset Case</button>
+          <button class="button" id="run-agent-demo" type="button">Run Triage</button>
         </div>
       </header>
 
+      <section class="case-strip" aria-label="Current case">
+        <div>
+          <p class="eyebrow">Case</p>
+          <strong>Admin Import Activation</strong>
+        </div>
+        <div>
+          <p class="eyebrow">User Question</p>
+          <span>What are customers asking us to fix after import?</span>
+        </div>
+        <div>
+          <p class="eyebrow">Outcome</p>
+          <span>Customer-impact brief and reviewable product action plan</span>
+        </div>
+      </section>
+
       <section class="demo-result" id="demo-result" aria-live="polite">
         <strong>Ready.</strong>
-        <span>Use WebMCP tools from a supported agent browser, or run the local demo in any browser.</span>
+        <span>Run triage to group requests, draft the brief, propose actions, and update the decision log.</span>
+      </section>
+
+      <section class="behind-panel" id="behind-panel" aria-labelledby="behind-heading" hidden>
+        <div class="behind-panel-header">
+          <div>
+            <p class="eyebrow">Behind the Scenes</p>
+            <h2 id="behind-heading">How the agent uses this page</h2>
+          </div>
+          <button class="button secondary" id="close-behind-scenes" type="button">Close</button>
+        </div>
+        <div class="behind-grid">
+          <div>
+            <h3>Agent test prompt</h3>
+            <p>
+              Use the WebMCP tools on the open Signal Desk page. Search for admin import customer requests, explain the evidence behind the post-import onboarding gap, draft a customer-impact brief, propose product-owned actions, and show the decision log.
+            </p>
+          </div>
+          <div>
+            <h3>Page tools</h3>
+            <ul class="tool-list">
+              <li><strong>search_signals</strong><span>Read-only request search</span></li>
+              <li><strong>cluster_signals</strong><span>Groups requests into patterns</span></li>
+              <li><strong>draft_brief</strong><span>Updates the customer-impact brief</span></li>
+              <li><strong>explain_evidence</strong><span>Shows supporting requests</span></li>
+              <li><strong>propose_actions</strong><span>Adds reviewable product actions</span></li>
+              <li><strong>set_review_state</strong><span>Updates approval state</span></li>
+              <li><strong>get_audit_trail</strong><span>Reads the decision log</span></li>
+              <li><strong>reset_demo</strong><span>Restores the seeded case</span></li>
+            </ul>
+          </div>
+          <div>
+            <h3>Browser support</h3>
+            <p>
+              WebMCP tools appear in Chrome Canary with WebMCP enabled or another WebMCP-capable browser host. Any browser can still run the operator workflow with Run Triage.
+            </p>
+          </div>
+        </div>
       </section>
 
       <section class="scoreboard" id="scoreboard" aria-label="Workspace summary"></section>
@@ -39,7 +92,7 @@
           <div class="panel-header">
             <div>
               <p class="eyebrow">Inbox</p>
-              <h2 id="signals-heading">Signals</h2>
+              <h2 id="signals-heading">Customer Requests</h2>
             </div>
             <label class="search-box">
               <span>Search</span>
@@ -54,7 +107,7 @@
           <div class="panel-header">
             <div>
               <p class="eyebrow">Patterns</p>
-              <h2 id="themes-heading">Themes</h2>
+              <h2 id="themes-heading">Pain Patterns</h2>
             </div>
             <span class="counter" id="theme-count"></span>
           </div>
@@ -65,7 +118,7 @@
           <div class="panel-header">
             <div>
               <p class="eyebrow">Draft</p>
-              <h2 id="brief-heading">Brief</h2>
+              <h2 id="brief-heading">Customer Impact Brief</h2>
             </div>
             <span class="status-pill" id="brief-status"></span>
           </div>
@@ -76,7 +129,7 @@
           <div class="panel-header">
             <div>
               <p class="eyebrow">Review</p>
-              <h2 id="actions-heading">Actions</h2>
+              <h2 id="actions-heading">Product Actions</h2>
             </div>
             <span class="counter" id="action-count"></span>
           </div>
@@ -87,7 +140,7 @@
           <div class="panel-header">
             <div>
               <p class="eyebrow">Evidence</p>
-              <h2 id="detail-heading">Selected Signal</h2>
+              <h2 id="detail-heading">Selected Request</h2>
             </div>
           </div>
           <div id="signal-detail"></div>
@@ -97,7 +150,7 @@
           <div class="panel-header">
             <div>
               <p class="eyebrow">Provenance</p>
-              <h2 id="audit-heading">Audit Trail</h2>
+              <h2 id="audit-heading">Decision Log</h2>
             </div>
           </div>
           <ol class="audit-list" id="audit-list"></ol>

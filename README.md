@@ -1,28 +1,28 @@
 # Signal Desk
 
-Signal Desk is a WebMCP-enabled intelligence review room for evidence-backed product, community, and market decisions.
+Signal Desk helps support and product operators make sense of messy customer requests after a launch.
 
-It demonstrates a provenance-first human-agent workflow: agents can search signals, cluster themes, draft evidence-linked briefs, explain evidence, and propose actions, while humans keep explicit review control over claims, themes, and actions.
+It groups related requests, shows supporting evidence, drafts a customer-impact brief, proposes product-owned actions, and keeps a decision log. WebMCP powers the behind-the-scenes agent workflow, while the default experience stays usable for a regular operator.
 
 ## Product Use Case
 
-Teams often collect important feedback across forums, support queues, calls, release comments, and competitor notes. The hard part is not summarizing the stream once. The hard part is preserving which evidence supports which claim, deciding what is ready to act on, and keeping a record of what changed.
+Teams often collect important feedback across support queues, community forums, customer calls, release comments, and sales notes. After a launch, the hard part is not reading one message. The hard part is finding the pattern, proving it with evidence, deciding what product should do next, and keeping a record of the decision.
 
-Signal Desk gives an agent structured tools for investigation and drafting while keeping the human operator in charge of review state.
+Signal Desk gives an operator a practical triage workflow, with an agent available to search, group, draft, explain, and propose actions inside the same visible workspace.
 
 ## Runtime Model
 
 Signal Desk does not require a local background service. The production app is a static HTTPS site with a small Worker wrapper for hosting.
 
-When WebMCP is available, the browser host provides `document.modelContext` and the page registers tools into that host. When WebMCP is not available, the human UI still works and the `Run Agent Demo` button exercises the same workflow locally in any browser.
+When WebMCP is available, the browser host provides `document.modelContext` and the page registers tools into that host. When WebMCP is not available, the human UI still works and the `Run Triage` button exercises the same workflow locally in any browser.
 
 ## What Makes It Different
 
-Signal Desk is not a generic analytics dashboard or chat wrapper. Its core contract is:
+Signal Desk is not a generic dashboard or chat wrapper. Its core contract is:
 
-- Every brief claim links back to supporting evidence.
-- Actions stay in an approval-gated review queue.
-- Human and agent changes share one audit trail.
+- Every customer-impact claim links back to supporting requests.
+- Product actions stay in an approval-gated review queue.
+- Human and agent changes share one decision log.
 - WebMCP tool calls update the same state that the UI renders.
 - The app runs from public-safe seeded data with no private account dependency.
 
@@ -33,8 +33,8 @@ Current status:
 - Static app shell.
 - Seeded product/community intelligence dataset.
 - Responsive operator workspace UI.
-- Search, filter, signal detail, theme review, claim review, action review, and audit trail.
-- Normal-browser `Run Agent Demo` fallback.
+- Search, filter, request detail, pattern review, claim review, action review, and decision log.
+- Normal-browser `Run Triage` fallback.
 - WebMCP tools registered through `document.modelContext.registerTool`.
 - Fallback status when WebMCP is unavailable.
 - Public production deployment on ChatGPT Sites.
@@ -68,20 +68,51 @@ Signal Desk exposes these tools when opened in a WebMCP-capable browser:
 - `get_audit_trail`
 - `reset_demo`
 
-Site tools require a ChatGPT account, selected model, and browser environment that support WebMCP. They are currently intended for the ChatGPT desktop app's built-in browser. Regular Chrome, Safari, Firefox, and ChatGPT Work cloud browser can open the app UI, but they may show the fallback message instead of exposing WebMCP tools.
+Site tools require a browser environment that supports WebMCP. Chrome Canary with WebMCP enabled has been confirmed. Regular Chrome, Safari, Firefox, and ChatGPT Work cloud browser can open the app UI, but they may show the fallback message instead of exposing WebMCP tools.
 
-## Demo Flow
+## Operator Flow
 
-1. Ask the agent to find the strongest admin/import signals.
-2. Ask it to explain the evidence for the onboarding theme.
-3. Ask it to draft a brief from the strongest themes.
-4. Ask it to propose product-owned actions.
-5. Approve one action and mark one claim as needs edit.
-6. Ask for the audit trail.
+1. Open the `Admin Import Activation` case.
+2. Review customer requests about import and setup confusion.
+3. Run triage or ask the agent to find the strongest request pattern.
+4. Review the evidence behind the onboarding gap.
+5. Draft a customer-impact brief.
+6. Propose product-owned actions.
+7. Approve one action and mark one claim as needs edit.
+8. Check the decision log.
 
-The app should visibly update as WebMCP tools are called.
+For a WebMCP test, ask:
 
-For a regular browser demo, click `Run Agent Demo`. It searches the seeded signals, drafts the brief, proposes an approval-gated action, and writes the audit trail without any external service.
+```text
+Use the WebMCP tools on the open Signal Desk page. Search for admin import customer requests, explain the evidence behind the post-import onboarding gap, draft a customer-impact brief, propose product-owned actions, and show the decision log.
+```
+
+For a regular browser demo, click `Run Triage`. It searches the seeded customer requests, drafts the brief, proposes an approval-gated action, and writes the decision log without any external service.
+
+## Behind The Scenes
+
+The app includes a `Behind the Scenes` panel with WebMCP status, tool names, browser support notes, and the exact agent test prompt.
+
+The WebMCP tools are:
+
+- `search_signals`
+- `cluster_signals`
+- `draft_brief`
+- `explain_evidence`
+- `propose_actions`
+- `set_review_state`
+- `get_audit_trail`
+- `reset_demo`
+
+## Review Flow
+
+1. Review the customer-impact brief.
+2. Inspect linked request evidence.
+3. Review proposed product actions.
+4. Approve one action and mark one claim as needs edit.
+5. Check the decision log.
+
+The app should visibly update as WebMCP tools or normal UI actions run.
 
 ## Development Checks
 

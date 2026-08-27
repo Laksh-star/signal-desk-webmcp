@@ -20,6 +20,9 @@ const els = {
   auditList: document.querySelector("#audit-list"),
   resetDemo: document.querySelector("#reset-demo"),
   selectCritical: document.querySelector("#select-critical"),
+  behindScenes: document.querySelector("#behind-scenes"),
+  closeBehindScenes: document.querySelector("#close-behind-scenes"),
+  behindPanel: document.querySelector("#behind-panel"),
   runAgentDemo: document.querySelector("#run-agent-demo"),
   toolStatus: document.querySelector("#tool-status"),
   scoreboard: document.querySelector("#scoreboard"),
@@ -70,7 +73,7 @@ function resetDemo() {
 
 function resetDemoWithAudit(actor = "Human") {
   resetDemo();
-  addAudit(actor, "Reset demo scenario", "Restored seeded signals, themes, brief, actions, and audit trail.");
+  addAudit(actor, "Reset customer request case", "Restored seeded requests, patterns, brief, actions, and decision log.");
   saveState();
   render();
 }
@@ -231,7 +234,7 @@ function renderScoreboard() {
   const counts = reviewCounts();
   els.scoreboard.innerHTML = `
     <div class="metric">
-      <span>Signals</span>
+      <span>Requests</span>
       <strong>${state.signals.length}</strong>
     </div>
     <div class="metric">
@@ -302,11 +305,11 @@ function renderSignals() {
           </article>
         `,
       )
-      .join("") || `<p class="empty-state">No signals match this view.</p>`;
+      .join("") || `<p class="empty-state">No customer requests match this view.</p>`;
 }
 
 function renderThemes() {
-  els.themeCount.textContent = `${state.themes.length} themes`;
+  els.themeCount.textContent = `${state.themes.length} patterns`;
   els.themeList.innerHTML = state.themes
     .map((theme) => {
       const supportCount = theme.signalIds.length;
@@ -318,7 +321,7 @@ function renderThemes() {
           </div>
           <h3>${theme.name}</h3>
           <p>${theme.summary}</p>
-          <div class="support-line">${supportCount} supporting signals</div>
+          <div class="support-line">${supportCount} supporting requests</div>
           <div class="review-controls compact" data-review-theme-id="${theme.id}">
             <button type="button" data-state="approved">Approve</button>
             <button type="button" data-state="needs_edit">Needs Edit</button>
@@ -407,7 +410,7 @@ function renderActions() {
 function renderDetail() {
   const signal = getActiveSignal();
   if (!signal) {
-    els.signalDetail.innerHTML = `<p class="empty-state">Select a signal to inspect evidence.</p>`;
+    els.signalDetail.innerHTML = `<p class="empty-state">Select a customer request to inspect evidence.</p>`;
     return;
   }
 
@@ -424,23 +427,23 @@ function renderDetail() {
       <h3>${signal.title}</h3>
       <p>${signal.excerpt}</p>
       <dl>
-        <div><dt>Author</dt><dd>${signal.author}</dd></div>
+        <div><dt>Reporter</dt><dd>${signal.author}</dd></div>
         <div><dt>Channel</dt><dd>${signal.channel}</dd></div>
         <div><dt>Captured</dt><dd>${formatDate(signal.timestamp)}</dd></div>
         <div><dt>Status</dt><dd>${labelFor(signal.status)}</dd></div>
       </dl>
       <a class="evidence-url" href="${signal.url}" target="_blank" rel="noreferrer">Open evidence source</a>
       <div class="linked-themes">
-        <h4>Linked themes</h4>
-        ${linkedThemes.map((theme) => `<span>${theme.name}</span>`).join("") || "<p>No linked themes.</p>"}
+        <h4>Linked patterns</h4>
+        ${linkedThemes.map((theme) => `<span>${theme.name}</span>`).join("") || "<p>No linked patterns.</p>"}
       </div>
       <div class="linked-themes">
         <h4>Used in brief claims</h4>
-        ${linkedClaims.map((claim) => `<span>${claim.label}</span>`).join("") || "<p>No brief claims cite this signal.</p>"}
+        ${linkedClaims.map((claim) => `<span>${claim.label}</span>`).join("") || "<p>No brief claims cite this request.</p>"}
       </div>
       <div class="linked-themes">
         <h4>Used in actions</h4>
-        ${linkedActions.map((action) => `<span>${action.title}</span>`).join("") || "<p>No actions cite this signal.</p>"}
+        ${linkedActions.map((action) => `<span>${action.title}</span>`).join("") || "<p>No actions cite this request.</p>"}
       </div>
     </article>
   `;
@@ -526,7 +529,7 @@ function searchSignalsTool({ query = "", priority = "all", confidence = "all", l
     .slice(0, safeLimit)
     .map((signal) => signalSummary(signal));
 
-  return asToolResult(`Found ${matches.length} matching signals.`, { signals: matches });
+  return asToolResult(`Found ${matches.length} matching customer requests.`, { signals: matches });
 }
 
 function clusterSignalsTool({ signalIds = [], minConfidence = "medium" } = {}) {
@@ -539,7 +542,7 @@ function clusterSignalsTool({ signalIds = [], minConfidence = "medium" } = {}) {
       );
 
   if (!selectedSignals.length) {
-    return asToolResult("No matching signals were available to cluster.", { themes: [] });
+    return asToolResult("No matching customer requests were available to group.", { themes: [] });
   }
 
   const signalIdSet = new Set(selectedSignals.map((signal) => signal.id));
@@ -551,13 +554,13 @@ function clusterSignalsTool({ signalIds = [], minConfidence = "medium" } = {}) {
   state.activeThemeId = state.themes[0]?.id || state.activeThemeId;
   addAudit(
     "Agent",
-    `Clustered ${selectedSignals.length} signals`,
-    "Refreshed theme support from the selected signal set while preserving evidence links.",
+    `Grouped ${selectedSignals.length} requests`,
+    "Refreshed pain-pattern support from the selected request set while preserving evidence links.",
   );
   saveState();
   render();
 
-  return asToolResult(`Clustered ${selectedSignals.length} signals into ${state.themes.length} themes.`, {
+  return asToolResult(`Grouped ${selectedSignals.length} customer requests into ${state.themes.length} patterns.`, {
     themes: state.themes.map((theme) => themeSummary(theme)),
   });
 }
@@ -568,11 +571,11 @@ function draftBriefTool({ themeIds = [], title = "" } = {}) {
     .filter(Boolean);
 
   if (!selectedThemes.length) {
-    return asToolResult("No themes were available for drafting.", { brief: state.brief });
+    return asToolResult("No patterns were available for drafting.", { brief: state.brief });
   }
 
   state.brief = {
-    title: title || "Launch Intelligence Brief: Import Activation",
+    title: title || "Customer Impact Brief: Admin Import Activation",
     status: "draft",
     updatedBy: "WebMCP agent",
     sections: selectedThemes.map((theme, index) => ({
@@ -581,20 +584,20 @@ function draftBriefTool({ themeIds = [], title = "" } = {}) {
       claim:
         index === 0
           ? `${theme.name}: ${theme.summary}`
-          : `${theme.name} is supported by ${theme.signalIds.length} linked signals and should remain reviewable before action.`,
+          : `${theme.name} is supported by ${theme.signalIds.length} linked customer requests and should remain reviewable before action.`,
       evidenceSignalIds: theme.signalIds.slice(0, 3),
       reviewState: "proposed",
     })),
   };
   addAudit(
     "Agent",
-    `Drafted brief from ${selectedThemes.length} themes`,
-    "Every generated claim carries linked supporting signals.",
+    `Drafted brief from ${selectedThemes.length} patterns`,
+    "Every generated claim carries linked supporting customer requests.",
   );
   saveState();
   render();
 
-  return asToolResult(`Drafted ${state.brief.sections.length} evidence-linked brief claims.`, {
+  return asToolResult(`Drafted ${state.brief.sections.length} evidence-linked customer-impact claims.`, {
     brief: state.brief,
   });
 }
@@ -605,7 +608,7 @@ function explainEvidenceTool({ targetType = "theme", targetId = "" } = {}) {
     if (!claim) return asToolResult(`Claim ${targetId} was not found.`, { evidence: [] });
 
     const evidence = claim.evidenceSignalIds.map((id) => getSignal(id)).filter(Boolean).map(signalSummary);
-    return asToolResult(`Claim "${claim.label}" is supported by ${evidence.length} signals.`, {
+    return asToolResult(`Claim "${claim.label}" is supported by ${evidence.length} customer requests.`, {
       target: claim,
       evidence,
     });
@@ -614,7 +617,7 @@ function explainEvidenceTool({ targetType = "theme", targetId = "" } = {}) {
   const theme = getTheme(targetId || state.activeThemeId);
   if (!theme) return asToolResult(`Theme ${targetId} was not found.`, { evidence: [] });
 
-  return asToolResult(`Theme "${theme.name}" is supported by ${theme.signalIds.length} signals.`, {
+  return asToolResult(`Pattern "${theme.name}" is supported by ${theme.signalIds.length} customer requests.`, {
     theme: themeSummary(theme),
   });
 }
@@ -625,7 +628,7 @@ function proposeActionsTool({ themeIds = [], owner = "Product" } = {}) {
     .filter(Boolean);
 
   if (!selectedThemes.length) {
-    return asToolResult("No themes were available for action proposals.", { actions: [] });
+    return asToolResult("No patterns were available for action proposals.", { actions: [] });
   }
 
   const newActions = selectedThemes.map((theme, index) => ({
@@ -633,7 +636,7 @@ function proposeActionsTool({ themeIds = [], owner = "Product" } = {}) {
     title: `Review response for ${theme.name.toLowerCase()}`,
     owner,
     due: "2026-09-01",
-    rationale: `Proposed from ${theme.signalIds.length} linked evidence signals. Human approval is required before execution.`,
+    rationale: `Proposed from ${theme.signalIds.length} linked customer requests. Human approval is required before execution.`,
     evidenceSignalIds: theme.signalIds.slice(0, 3),
     state: "proposed",
   }));
@@ -641,8 +644,8 @@ function proposeActionsTool({ themeIds = [], owner = "Product" } = {}) {
   state.actions = [...newActions, ...state.actions];
   addAudit(
     "Agent",
-    `Proposed ${newActions.length} actions`,
-    "Actions were added as proposed items and require human review before execution.",
+    `Proposed ${newActions.length} product actions`,
+    "Product actions were added as proposed items and require human review before execution.",
   );
   saveState();
   render();
@@ -697,7 +700,7 @@ function runLocalAgentDemo() {
   explainEvidenceTool({ targetType: "theme", targetId: "theme-onboarding" });
   draftBriefTool({
     themeIds: ["theme-onboarding", "theme-trust"],
-    title: "Admin Import Activation Brief",
+    title: "Customer Impact Brief: Admin Import Activation",
   });
   proposeActionsTool({ themeIds: ["theme-onboarding"], owner: "Product" });
   const audit = getAuditTrailTool({ limit: 4 });
@@ -705,8 +708,8 @@ function runLocalAgentDemo() {
   const latest = audit.structuredContent.auditTrail[0]?.action || "Updated audit trail";
 
   updateDemoResult(
-    "Agent demo complete.",
-    `Found ${found} signals, drafted an evidence-linked brief, proposed a Product action, and logged "${latest}".`,
+    "Triage complete.",
+    `Grouped ${found} customer requests, drafted the customer-impact brief, proposed a Product action, and logged "${latest}".`,
   );
 }
 
@@ -718,7 +721,7 @@ async function registerWebMcpTools() {
   };
 
   if (!modelContext?.registerTool) {
-    updateToolStatus("unavailable", "Use ChatGPT desktop browser for WebMCP");
+    updateToolStatus("unavailable", "WebMCP unavailable");
     return;
   }
 
@@ -745,7 +748,7 @@ async function registerWebMcpTools() {
     {
       name: "cluster_signals",
       description:
-        "Refresh visible theme support from selected signals while preserving evidence links and adding an agent audit event.",
+        "Refresh visible pain-pattern support from selected customer requests while preserving evidence links and adding an agent audit event.",
       inputSchema: {
         type: "object",
         properties: {
@@ -759,7 +762,7 @@ async function registerWebMcpTools() {
     {
       name: "draft_brief",
       description:
-        "Draft evidence-linked brief claims from selected themes and update the visible brief editor.",
+        "Draft evidence-linked customer-impact claims from selected patterns and update the visible brief editor.",
       inputSchema: {
         type: "object",
         properties: {
@@ -773,7 +776,7 @@ async function registerWebMcpTools() {
     {
       name: "explain_evidence",
       description:
-        "Explain the evidence supporting a theme or brief claim. Returns the linked signals and does not change app state.",
+        "Explain the evidence supporting a pattern or brief claim. Returns linked customer requests and does not change app state.",
       inputSchema: {
         type: "object",
         properties: {
@@ -787,7 +790,7 @@ async function registerWebMcpTools() {
     {
       name: "propose_actions",
       description:
-        "Create approval-gated action proposals from selected themes and add them to the visible review queue.",
+        "Create approval-gated product action proposals from selected patterns and add them to the visible review queue.",
       inputSchema: {
         type: "object",
         properties: {
@@ -817,7 +820,7 @@ async function registerWebMcpTools() {
     {
       name: "get_audit_trail",
       description:
-        "Return recent human and agent changes from the Signal Desk audit trail without changing app state.",
+        "Return recent human and agent changes from the Signal Desk decision log without changing app state.",
       inputSchema: {
         type: "object",
         properties: {
@@ -830,7 +833,7 @@ async function registerWebMcpTools() {
     {
       name: "reset_demo",
       description:
-        "Reset Signal Desk to its seeded demo scenario and record that the agent reset it.",
+        "Reset Signal Desk to its seeded customer-request case and record that the agent reset it.",
       inputSchema: {
         type: "object",
         properties: {},
@@ -921,10 +924,18 @@ els.signalSearch.addEventListener("input", (event) => {
 
 els.resetDemo.addEventListener("click", () => {
   resetDemo();
-  updateDemoResult("Ready.", "Demo state reset. Run the local demo or use WebMCP from a supported agent browser.");
+  updateDemoResult("Ready.", "Case reset. Run triage to group requests, draft the brief, propose actions, and update the decision log.");
 });
 
 els.runAgentDemo.addEventListener("click", runLocalAgentDemo);
+
+els.behindScenes.addEventListener("click", () => {
+  els.behindPanel.hidden = false;
+});
+
+els.closeBehindScenes.addEventListener("click", () => {
+  els.behindPanel.hidden = true;
+});
 
 els.selectCritical.addEventListener("click", () => {
   activeFilter = "critical";
