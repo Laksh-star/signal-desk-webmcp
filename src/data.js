@@ -136,7 +136,7 @@ export const initialState = {
     },
   ],
   brief: {
-    title: "Launch Intelligence Brief: Import Activation",
+    title: "Customer Impact Brief: Admin Import Activation",
     status: "draft",
     updatedBy: "Seed scenario",
     sections: [
@@ -202,16 +202,16 @@ export const initialState = {
     {
       id: "audit-001",
       actor: "Agent",
-      action: "Clustered 6 signals into 3 themes",
+      action: "Grouped 6 requests into 3 patterns",
       timestamp: "2026-08-26T14:49:00+05:30",
-      detail: "Grouped signals by activation, documentation, and trust patterns.",
+      detail: "Grouped customer requests by activation, documentation, and trust patterns.",
     },
     {
       id: "audit-002",
       actor: "Agent",
       action: "Drafted 3 brief claims with evidence",
       timestamp: "2026-08-26T14:51:00+05:30",
-      detail: "Each claim includes at least two supporting signals.",
+      detail: "Each claim includes at least two supporting customer requests.",
     },
     {
       id: "audit-003",
