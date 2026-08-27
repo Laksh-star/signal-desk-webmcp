@@ -1,6 +1,6 @@
 import { initialState } from "./data.js";
 
-const stateKey = "signal-desk-state-v1";
+const stateKey = "signal-desk-state-v2";
 const filters = ["all", "critical", "high", "medium", "selected"];
 let activeFilter = "all";
 let searchTerm = "";
@@ -19,6 +19,7 @@ const els = {
   signalDetail: document.querySelector("#signal-detail"),
   auditList: document.querySelector("#audit-list"),
   resetDemo: document.querySelector("#reset-demo"),
+  goHome: document.querySelector("#go-home"),
   selectCritical: document.querySelector("#select-critical"),
   behindScenes: document.querySelector("#behind-scenes"),
   closeBehindScenes: document.querySelector("#close-behind-scenes"),
@@ -86,6 +87,10 @@ function addAudit(actor, action, detail) {
     detail,
     timestamp: new Date().toISOString(),
   });
+}
+
+function sameStringList(left = [], right = []) {
+  return left.length === right.length && left.every((item, index) => item === right[index]);
 }
 
 function getSignal(id) {
@@ -228,6 +233,22 @@ function updateDemoResult(title, detail) {
     <strong>${title}</strong>
     <span>${detail}</span>
   `;
+}
+
+function goHome() {
+  els.behindPanel.hidden = true;
+  els.behindScenes.textContent = "Behind the Scenes";
+  activeFilter = "all";
+  searchTerm = "";
+  els.signalSearch.value = "";
+  saveState();
+  render();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function setBehindPanelVisible(visible) {
+  els.behindPanel.hidden = !visible;
+  els.behindScenes.textContent = visible ? "Hide Details" : "Behind the Scenes";
 }
 
 function renderScoreboard() {
@@ -494,18 +515,27 @@ function setHumanReviewState(targetType, targetId, reviewState) {
   if (!reviewStates.includes(reviewState)) return;
 
   let target;
+  let currentState;
   if (targetType === "action") {
     target = getAction(targetId);
-    if (target && target.state !== reviewState) target.state = reviewState;
+    currentState = target?.state;
+    if (target && currentState !== reviewState) target.state = reviewState;
   } else if (targetType === "theme") {
     target = getTheme(targetId);
-    if (target && target.reviewState !== reviewState) target.reviewState = reviewState;
+    currentState = target?.reviewState;
+    if (target && currentState !== reviewState) target.reviewState = reviewState;
   } else if (targetType === "claim") {
     target = state.brief.sections.find((section) => section.id === targetId);
-    if (target && target.reviewState !== reviewState) target.reviewState = reviewState;
+    currentState = target?.reviewState;
+    if (target && currentState !== reviewState) target.reviewState = reviewState;
   }
 
   if (!target) return;
+  if (currentState === reviewState) {
+    updateDemoResult("No change needed.", `${target.title || target.name || target.label} is already ${labelFor(reviewState)}.`);
+    return;
+  }
+
   addAudit("Human", `Marked ${targetType} ${labelFor(reviewState)}`, target.title || target.name || target.label);
   saveState();
   render();
@@ -574,7 +604,7 @@ function draftBriefTool({ themeIds = [], title = "" } = {}) {
     return asToolResult("No patterns were available for drafting.", { brief: state.brief });
   }
 
-  state.brief = {
+  const nextBrief = {
     title: title || "Customer Impact Brief: Admin Import Activation",
     status: "draft",
     updatedBy: "WebMCP agent",
@@ -589,6 +619,29 @@ function draftBriefTool({ themeIds = [], title = "" } = {}) {
       reviewState: "proposed",
     })),
   };
+
+  const briefAlreadyCurrent =
+    state.brief.title === nextBrief.title &&
+    state.brief.status === nextBrief.status &&
+    state.brief.updatedBy === nextBrief.updatedBy &&
+    state.brief.sections.length === nextBrief.sections.length &&
+    state.brief.sections.every((section, index) => {
+      const nextSection = nextBrief.sections[index];
+      return (
+        section.label === nextSection.label &&
+        section.claim === nextSection.claim &&
+        sameStringList(section.evidenceSignalIds, nextSection.evidenceSignalIds)
+      );
+    });
+
+  if (briefAlreadyCurrent) {
+    return asToolResult("Customer-impact brief is already up to date.", {
+      brief: state.brief,
+      changed: false,
+    });
+  }
+
+  state.brief = nextBrief;
   addAudit(
     "Agent",
     `Drafted brief from ${selectedThemes.length} patterns`,
@@ -599,6 +652,7 @@ function draftBriefTool({ themeIds = [], title = "" } = {}) {
 
   return asToolResult(`Drafted ${state.brief.sections.length} evidence-linked customer-impact claims.`, {
     brief: state.brief,
+    changed: true,
   });
 }
 
@@ -631,8 +685,7 @@ function proposeActionsTool({ themeIds = [], owner = "Product" } = {}) {
     return asToolResult("No patterns were available for action proposals.", { actions: [] });
   }
 
-  const newActions = selectedThemes.map((theme, index) => ({
-    id: `act-agent-${Date.now()}-${index}`,
+  const proposedActions = selectedThemes.map((theme) => ({
     title: `Review response for ${theme.name.toLowerCase()}`,
     owner,
     due: "2026-09-01",
@@ -640,6 +693,28 @@ function proposeActionsTool({ themeIds = [], owner = "Product" } = {}) {
     evidenceSignalIds: theme.signalIds.slice(0, 3),
     state: "proposed",
   }));
+
+  const newActions = proposedActions
+    .filter(
+      (proposal) =>
+        !state.actions.some(
+          (action) =>
+            action.title === proposal.title &&
+            action.owner === proposal.owner &&
+            sameStringList(action.evidenceSignalIds, proposal.evidenceSignalIds),
+        ),
+    )
+    .map((proposal, index) => ({
+      id: `act-agent-${Date.now()}-${index}`,
+      ...proposal,
+    }));
+
+  if (!newActions.length) {
+    return asToolResult("Product action proposals are already in the review queue.", {
+      actions: state.actions.map((action) => actionSummary(action)),
+      changed: false,
+    });
+  }
 
   state.actions = [...newActions, ...state.actions];
   addAudit(
@@ -652,6 +727,7 @@ function proposeActionsTool({ themeIds = [], owner = "Product" } = {}) {
 
   return asToolResult(`Proposed ${newActions.length} approval-gated actions.`, {
     actions: newActions.map((action) => actionSummary(action)),
+    changed: true,
   });
 }
 
@@ -661,19 +737,32 @@ function setReviewStateTool({ targetType = "action", targetId = "", reviewState 
   }
 
   let target;
+  let currentState;
   if (targetType === "action") {
     target = getAction(targetId);
-    if (target) target.state = reviewState;
+    currentState = target?.state;
+    if (target && currentState !== reviewState) target.state = reviewState;
   } else if (targetType === "theme") {
     target = getTheme(targetId);
-    if (target) target.reviewState = reviewState;
+    currentState = target?.reviewState;
+    if (target && currentState !== reviewState) target.reviewState = reviewState;
   } else if (targetType === "claim") {
     target = state.brief.sections.find((section) => section.id === targetId);
-    if (target) target.reviewState = reviewState;
+    currentState = target?.reviewState;
+    if (target && currentState !== reviewState) target.reviewState = reviewState;
   }
 
   if (!target) {
     return asToolResult(`${targetType} ${targetId} was not found.`, { updated: false });
+  }
+
+  if (currentState === reviewState) {
+    return asToolResult(`${targetType} ${targetId} is already ${labelFor(reviewState)}.`, {
+      updated: false,
+      targetType,
+      targetId,
+      reviewState,
+    });
   }
 
   addAudit("Agent", `Marked ${targetType} ${labelFor(reviewState)}`, target.title || target.name || target.label);
@@ -698,18 +787,21 @@ function getAuditTrailTool({ limit = 8 } = {}) {
 function runLocalAgentDemo() {
   const search = searchSignalsTool({ query: "admin import", limit: 4 });
   explainEvidenceTool({ targetType: "theme", targetId: "theme-onboarding" });
-  draftBriefTool({
+  const brief = draftBriefTool({
     themeIds: ["theme-onboarding", "theme-trust"],
     title: "Customer Impact Brief: Admin Import Activation",
   });
-  proposeActionsTool({ themeIds: ["theme-onboarding"], owner: "Product" });
+  const actions = proposeActionsTool({ themeIds: ["theme-onboarding"], owner: "Product" });
   const audit = getAuditTrailTool({ limit: 4 });
   const found = search.structuredContent.signals.length;
   const latest = audit.structuredContent.auditTrail[0]?.action || "Updated audit trail";
+  const changed = brief.structuredContent.changed || actions.structuredContent.changed;
 
   updateDemoResult(
-    "Triage complete.",
-    `Grouped ${found} customer requests, drafted the customer-impact brief, proposed a Product action, and logged "${latest}".`,
+    changed ? "Triage complete." : "Triage already current.",
+    changed
+      ? `Grouped ${found} customer requests, drafted the customer-impact brief, proposed Product action, and logged "${latest}".`
+      : `The brief and Product action queue were already up to date from ${found} matching customer requests.`,
   );
 }
 
@@ -925,17 +1017,22 @@ els.signalSearch.addEventListener("input", (event) => {
 els.resetDemo.addEventListener("click", () => {
   resetDemo();
   updateDemoResult("Ready.", "Case reset. Run triage to group requests, draft the brief, propose actions, and update the decision log.");
+  setBehindPanelVisible(false);
 });
 
 els.runAgentDemo.addEventListener("click", runLocalAgentDemo);
 
 els.behindScenes.addEventListener("click", () => {
-  els.behindPanel.hidden = false;
+  const shouldShow = els.behindPanel.hidden;
+  setBehindPanelVisible(shouldShow);
 });
 
 els.closeBehindScenes.addEventListener("click", () => {
-  els.behindPanel.hidden = true;
+  setBehindPanelVisible(false);
+  window.scrollTo({ top: 0, behavior: "smooth" });
 });
+
+els.goHome.addEventListener("click", goHome);
 
 els.selectCritical.addEventListener("click", () => {
   activeFilter = "critical";
