@@ -41,6 +41,14 @@ Current status:
 
 See `SUBMISSION.md` for challenge-specific submission notes.
 
+## Screenshots
+
+![Signal Desk overview](docs/assets/signal-desk-01-overview.png)
+
+![Signal Desk triage result](docs/assets/signal-desk-02-triage-result.png)
+
+![Signal Desk WebMCP tools](docs/assets/signal-desk-03-webmcp-tools.png)
+
 ## Run Locally
 
 ```sh
