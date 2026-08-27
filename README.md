@@ -117,8 +117,8 @@ The app should visibly update as WebMCP tools or normal UI actions run.
 ## Development Checks
 
 ```sh
-node --check src/app.js
-node --check src/data.js
+npm run check
+npm run build
 ```
 
 ## Privacy
